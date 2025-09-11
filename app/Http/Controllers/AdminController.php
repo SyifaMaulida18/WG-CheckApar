@@ -112,6 +112,16 @@ class AdminController extends Controller
     }
 
     /**
+ * Menampilkan halaman laporan inspeksi dalam format tabel.
+ */
+public function reportsIndex()
+{
+    $inspeksis = Inspeksi::with(['apar', 'user'])->latest()->get();
+
+    return view('admin.reports.index', compact('inspeksis'));
+}
+
+    /**
      * Mengekspor laporan inspeksi ke file Excel.
      */
     public function exportInspeksi()
@@ -119,4 +129,5 @@ class AdminController extends Controller
         $fileName = 'Laporan-Inspeksi-' . now()->format('Y-m-d_His') . '.xlsx';
         return Excel::download(new InspeksiExport, $fileName);
     }
+    
 }

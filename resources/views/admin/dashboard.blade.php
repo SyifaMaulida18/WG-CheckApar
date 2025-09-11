@@ -67,9 +67,9 @@
                 <div class="card-body p-4 text-center">
                     <i class="fas fa-file-excel fa-4x text-info mb-3"></i>
                     <h5 class="card-title fw-bold">Laporan Inspeksi</h5>
-                    <p class="card-text text-muted">Unduh data inspeksi ke format Excel.</p>
-                    <a href="{{ route('admin.reports.inspeksi.export') }}" class="btn btn-info text-white mt-3">
-                        <i class="fas fa-download me-2"></i> Unduh Laporan
+                    <p class="card-text text-muted">Lihat Unduh data inspeksi ke format Excel.</p>
+                    <a href="{{ route('admin.reports.inspeksi.index') }}" class="btn btn-info text-white mt-3">
+                        <i class="fas fa-download me-2"></i> Lihat Laporan
                     </a>
                 </div>
             </div>

@@ -28,6 +28,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('apars', AparController::class); 
         
         // Rute untuk Laporan Inspeksi (juga hanya untuk admin)
+        Route::get('/reports/inspeksi', [AdminController::class, 'reportsIndex'])->name('reports.inspeksi.index');
         Route::get('/reports/inspeksi/export', [AdminController::class, 'exportInspeksi'])->name('reports.inspeksi.export');
     });
 
