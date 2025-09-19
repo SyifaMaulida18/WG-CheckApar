@@ -23,6 +23,9 @@ COPY . .
 # Install dependencies Laravel
 RUN composer install --no-dev --optimize-autoloader
 
+# Generate key kalau belum ada
+RUN php artisan key:generate --force
+
 # Set permissions
 RUN chown -R www-data:www-data storage bootstrap/cache
 
@@ -30,4 +33,4 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 EXPOSE 8080
 
 # Jalankan Laravel
-CMD php artisan serve --host=0.0.0.0 --port=8080
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]
