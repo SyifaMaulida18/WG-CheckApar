@@ -1,14 +1,15 @@
 # Gunakan PHP 8.2 dengan Apache
 FROM php:8.2-apache
 
-# Install ekstensi GD + dependencies MySQL
+# Install ekstensi GD + ZIP + PDO MySQL
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
+    libzip-dev \
     zip unzip git curl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql
+    && docker-php-ext-install gd zip pdo pdo_mysql
 
 # Install Composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
