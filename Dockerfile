@@ -7,9 +7,13 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     libwebp-dev \
     libxpm-dev \
-    zip unzip git curl \
+    libzip-dev \
+    unzip \
+    zip \
+    git \
+    curl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp --with-xpm \
-    && docker-php-ext-install gd pdo pdo_mysql
+    && docker-php-ext-install gd pdo pdo_mysql zip
 
 # Copy project
 COPY . /var/www/html
