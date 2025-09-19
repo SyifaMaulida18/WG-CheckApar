@@ -23,14 +23,13 @@ COPY . .
 # Install dependencies Laravel
 RUN composer install --no-dev --optimize-autoloader
 
-# Generate key kalau belum ada
-RUN php artisan key:generate --force
-
 # Set permissions
 RUN chown -R www-data:www-data storage bootstrap/cache
 
 # Expose port 8080 (Railway pakai ini)
 EXPOSE 8080
 
-# Jalankan Laravel
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]
+# Jalankan Laravel (generate key di runtime kalau belum ada)
+CMD if [ ! -f .env ]; then cp .env.example .env; fi && \
+    if ! grep -q "APP_KEY=" .env || [ -z "$(grep 'APP_KEY=' .env | cut -d '=' -f2)" ]; then php artisan key:generate --force; fi && \
+    php artisan serve --host=0.0.0.0 --port=8080
