@@ -112,14 +112,44 @@ class AdminController extends Controller
     }
 
     /**
- * Menampilkan halaman laporan inspeksi dalam format tabel.
- */
-public function reportsIndex()
-{
-    $inspeksis = Inspeksi::with(['apar', 'user'])->latest()->get();
+     * Menampilkan halaman laporan inspeksi dengan opsi filter.
+     */
+    public function reportsIndex(Request $request)
+    {
+        $inspeksis = Inspeksi::with(['apar', 'user'])
+            ->when($request->filled('start_date'), function ($query) use ($request) {
+                $query->whereDate('created_at', '>=', $request->start_date);
+            })
+            ->when($request->filled('end_date'), function ($query) use ($request) {
+                $query->whereDate('created_at', '<=', $request->end_date);
+            })
+            ->when($request->filled('gedung'), function ($query) use ($request) {
+                $query->whereHas('apar', function ($q) use ($request) {
+                    $q->where('gedung', $request->gedung);
+                });
+            })
+            ->when($request->filled('kondisi'), function ($query) use ($request) {
+                $status = ($request->kondisi == 'Normal') ? 'Normal' : ['Rendah', 'Tinggi', 'Bocor', 'Rusak'];
+                if (is_array($status)) {
+                     $query->where(function($q) use ($status) {
+                        $q->whereIn('kondisi_tekanan', $status)
+                          ->orWhereIn('kondisi_selang', $status)
+                          ->orWhereIn('kondisi_segel', $status);
+                    });
+                } else {
+                    $query->where('kondisi_tekanan', $status)
+                          ->where('kondisi_selang', $status)
+                          ->where('kondisi_segel', 'Utuh');
+                }
+            })
+            ->latest()
+            ->get();
+        
+        // Ambil daftar gedung unik untuk dropdown filter
+        $gedungs = Apar::distinct()->pluck('gedung')->sort();
 
-    return view('admin.reports.index', compact('inspeksis'));
-}
+        return view('admin.reports.index', compact('inspeksis', 'gedungs'));
+    }
 
     /**
      * Mengekspor laporan inspeksi ke file Excel.
